@@ -5,25 +5,29 @@ function Welcome() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Retrieve the passed income and result from state (if any)
+  // Retrieve the passed income and expense from state (or initialize to 0)
   const income = location.state?.income || 0;
-  
   const expense = location.state?.expense || 0;
-  const savingsOrLoss = location.state?.result || 0;
+
+  // Calculate savings or loss
+  const savingsOrLoss = income - expense;
+
+  // Determine whether it's a saving or a loss
   let result = '';
-if (savingsOrLoss > 0) {
-  result = 'Saving';
-} else if (savingsOrLoss < 0) {
-  result = 'Loss';
-} else {
-  result = 'No Gain, No Loss';
-}
+  if (savingsOrLoss > 0) {
+    result = 'Saving';
+  } else if (savingsOrLoss < 0) {
+    result = 'Loss';
+  } else {
+    result = 'No Gain, No Loss';
+  }
+
   const handleIncome = () => {
-    navigate('/Addincome', { state: { income } });
+    navigate('/Addincome', { state: { income, expense } }); // Pass current totals
   };
 
   const handleExpense = () => {
-    navigate('/Addexpense', { state: { expense } });
+    navigate('/Addexpense', { state: { income, expense } }); // Pass current totals
   };
 
   const containerStyle = {
@@ -65,12 +69,14 @@ if (savingsOrLoss > 0) {
           <input type="text" id="totalIncome" className="form-control" value={income} readOnly style={inputStyle} />
         </div>
         <div className="mb-3">
-          <label htmlFor="totalIncome" className="form-label">Total Expense</label>
+          <label htmlFor="totalExpense" className="form-label">Total Expense</label>
           <input type="text" id="totalExpense" className="form-control" value={expense} readOnly style={inputStyle} />
         </div>
         <div className="mb-3">
           <label htmlFor="savingsOrLoss" className="form-label">Savings/Loss</label>
-          <input type="text" id="savingsOrLoss" className="form-control"value={`${result} (${savingsOrLoss})`}  readOnly style={inputStyle} />
+          {/* Display both result and numeric value */}
+          <input type="text" id="savingsOrLoss" className="form-control" 
+            value={`${result} (${savingsOrLoss})`} readOnly style={inputStyle} />
         </div>
         <button type="button" style={buttonStyle} onClick={handleIncome}>Add Income</button>
         <button type="button" style={{ ...buttonStyle, marginLeft: '10px' }} onClick={handleExpense}>Add Expense</button>

@@ -1,86 +1,58 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-function Addincome() {
-  const [formdata, setFormData] = useState({ incamount: '', source: '' });
+function AddIncome() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const currentIncome = location.state?.income || 0;
+  const [newIncome, setNewIncome] = useState(0);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formdata, [name]: value });
+  const handleSubmit = () => {
+    const updatedIncome = currentIncome + parseFloat(newIncome);
+    navigate('/', { state: { income: updatedIncome, expense: location.state?.expense || 0 } });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const amountincome = parseFloat(formdata.incamount) || 0;
-     
-    // Navigate to Addexpense and pass the income value
-    navigate('/Addexpense', { state: { income: amountincome } });
-  };
-
+  // Styles
   const containerStyle = {
     width: '400px',
     padding: '20px',
-    backgroundColor: '#e0f7fa',
+    margin: '50px auto',
+    backgroundColor: '#f0f8ff',
     borderRadius: '10px',
-    margin: '100px auto',
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)'
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+    textAlign: 'center'
   };
 
   const inputStyle = {
     width: '100%',
     padding: '10px',
-    marginTop: '10px',
+    marginBottom: '20px',
     borderRadius: '5px',
     border: '1px solid #ccc'
   };
 
   const buttonStyle = {
-    marginTop: '20px',
     padding: '10px 20px',
     borderRadius: '5px',
     backgroundColor: '#007bff',
     color: 'white',
     border: 'none',
-    cursor: 'pointer'
+    cursor: 'pointer',
   };
 
   return (
     <div style={containerStyle}>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="incamount" className="form-label">Amount</label>
-          <input
-            type="number"
-            className="form-control"
-            id="incamount"
-            name="incamount"
-            value={formdata.incamount}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="source" className="form-label">Source</label>
-          <input
-            type="text"
-            className="form-control"
-            id="source"
-            name="source"
-            value={formdata.source}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-        <button type="submit" style={buttonStyle}>Submit</button>
-      </form>
+      <h2 style={{ color: '#007bff', marginBottom: '20px' }}>Add Income</h2>
+      <input
+        type="number"
+        value={newIncome}
+        onChange={(e) => setNewIncome(e.target.value)}
+        placeholder="Enter new income"
+        style={inputStyle}
+      />
+      <button onClick={handleSubmit} style={buttonStyle}>Submit Income</button>
     </div>
   );
 }
 
-export default Addincome;
-
-  
-  
-
-    
+export default AddIncome;

@@ -1,89 +1,58 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-function Addexpense() {
-  const [formdata, setFormData] = useState({ expamount: '', category: '' });
-  const navigate = useNavigate();
+function AddExpense() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const currentExpense = location.state?.expense || 0;
+  const [newExpense, setNewExpense] = useState(0);
 
-  // Get the income passed from Addincome
-  const income = location.state?.income || 0;
-const amountexpense= location.state?.amountexpense||0
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formdata, [name]: value });
+  const handleSubmit = () => {
+    const updatedExpense = currentExpense + parseFloat(newExpense);
+    navigate('/', { state: { income: location.state?.income || 0, expense: updatedExpense } });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const amountexpense = parseFloat(formdata.expamount) || 0;
-
-    // Calculate savings or loss
-    const result = income - amountexpense;
-
-    // Navigate back to the Welcome page with the result and income
-    navigate('/', { state: { result, income,amountexpense } });
-  };
-
+  // Styles
   const containerStyle = {
     width: '400px',
     padding: '20px',
-    backgroundColor: '#fff3e0',
+    margin: '50px auto',
+    backgroundColor: '#f0f8ff',
     borderRadius: '10px',
-    margin: '100px auto',
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)'
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+    textAlign: 'center'
   };
 
   const inputStyle = {
     width: '100%',
     padding: '10px',
-    marginTop: '10px',
+    marginBottom: '20px',
     borderRadius: '5px',
     border: '1px solid #ccc'
   };
 
   const buttonStyle = {
-    marginTop: '20px',
     padding: '10px 20px',
     borderRadius: '5px',
     backgroundColor: '#007bff',
     color: 'white',
     border: 'none',
-    cursor: 'pointer'
+    cursor: 'pointer',
   };
 
   return (
     <div style={containerStyle}>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="expamount" className="form-label">Amount</label>
-          <input
-            type="number"
-            className="form-control"
-            id="expamount"
-            name="expamount"
-            value={formdata.expamount}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="category" className="form-label">Category</label>
-          <input
-            type="text"
-            className="form-control"
-            id="category"
-            name="category"
-            value={formdata.category}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-        <button type="submit" style={buttonStyle}>Submit</button>
-      </form>
+      <h2 style={{ color: '#007bff', marginBottom: '20px' }}>Add Expense</h2>
+      <input
+        type="number"
+        value={newExpense}
+        onChange={(e) => setNewExpense(e.target.value)}
+        placeholder="Enter new expense"
+        style={inputStyle}
+      />
+      <button onClick={handleSubmit} style={buttonStyle}>Submit Expense</button>
     </div>
   );
 }
 
-export default Addexpense;
+export default AddExpense;
